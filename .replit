@@ -58,3 +58,8 @@ exposeLocalhost = true
 [[ports]]
 localPort = 34687
 externalPort = 3000
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "cd backend && export PYTHONPATH=/home/runner/workspace:$PYTHONPATH && python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 & cd /home/runner/workspace/frontend && npx vite preview --host 0.0.0.0 --port 5000"]
+build = ["bash", "-c", "cd frontend && npm run build"]
