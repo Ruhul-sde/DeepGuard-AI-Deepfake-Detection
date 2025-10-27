@@ -1,6 +1,5 @@
 from fastapi import APIRouter, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
-import magic
 import os
 from typing import Dict, Any
 
@@ -15,10 +14,16 @@ async def analyze_media(file: UploadFile = File(...)):
     try:
         # Validate file type
         content = await file.read()
-        file_type = magic.from_buffer(content, mime=True)
         
         if not any(file.filename.lower().endswith(ext) for ext in settings.ALLOWED_EXTENSIONS):
             raise HTTPException(status_code=400, detail="File type not supported")
+        
+        # Determine file type from content_type or filename
+        file_type = file.content_type or "application/octet-stream"
+        if file.filename.lower().endswith(('.jpg', '.jpeg', '.png')):
+            file_type = "image/jpeg"
+        elif file.filename.lower().endswith(('.mp4', '.avi', '.mov')):
+            file_type = "video/mp4"
         
         # Reset file pointer
         await file.seek(0)

@@ -1,4 +1,3 @@
-import tensorflow as tf
 import numpy as np
 import cv2
 from typing import Dict, Any
@@ -12,20 +11,11 @@ class DeepFakeDetector:
     
     def load_model(self, model_path: str):
         """Load pre-trained deepfake detection model"""
-        try:
-            # In production, load actual trained model
-            # self.model = tf.keras.models.load_model(model_path)
-            print("Deepfake detection model loaded")
-        except Exception as e:
-            print(f"Model loading failed: {e}")
-            self._create_dummy_model()
+        pass
     
     def _create_dummy_model(self):
         """Create dummy model for demonstration"""
-        self.model = tf.keras.Sequential([
-            tf.keras.layers.GlobalAveragePooling2D(),
-            tf.keras.layers.Dense(1, activation='sigmoid')
-        ])
+        pass
     
     async def analyze_image(self, image: np.ndarray) -> Dict[str, Any]:
         """Analyze image for deepfake indicators"""

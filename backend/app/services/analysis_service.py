@@ -1,12 +1,15 @@
+import sys
+import os
 import cv2
 import numpy as np
 from PIL import Image, ImageFilter
 import io
 import tempfile
-import os
 from typing import Dict, Any, List
 import json
 from datetime import datetime
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../..'))
 
 from ml_models.deepfake_detector import DeepFakeDetector
 from ml_models.ai_generated_detector import AIGeneratedDetector

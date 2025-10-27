@@ -59,7 +59,11 @@ const MediaUpload = ({ onAnalysisStart, onAnalysisComplete }) => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://localhost:8000/api/v1/analyze-media', {
+      const backendUrl = window.location.hostname === 'localhost' 
+        ? 'http://localhost:8000'
+        : `https://${window.location.hostname.replace('-00-', '-8000-00-')}`;
+      
+      const response = await fetch(`${backendUrl}/api/v1/analyze-media`, {
         method: 'POST',
         body: formData,
       });

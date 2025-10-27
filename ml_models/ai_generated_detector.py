@@ -2,8 +2,6 @@ import numpy as np
 import cv2
 from typing import Dict, Any
 from PIL import Image
-import torch
-import torchvision.transforms as transforms
 
 class AIGeneratedDetector:
     def __init__(self):
