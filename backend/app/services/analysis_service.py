@@ -161,3 +161,52 @@ class AnalysisService:
     
     def _generate_analysis_id(self) -> str:
         return f"analysis_{datetime.utcnow().strftime('%Y%m%d_%H%M%S_%f')}"
+    
+    async def _analyze_video_frame(self, frame: np.ndarray) -> Dict[str, Any]:
+        deepfake_analysis = await self.deepfake_detector.analyze_image(frame)
+        ai_analysis = await self.ai_detector.analyze_image(frame)
+        forensics_analysis = await self.forensics_analyzer.analyze(frame)
+        
+        return {
+            "deepfake_probability": deepfake_analysis.get("probability", 0),
+            "ai_generated_probability": ai_analysis.get("probability", 0),
+            "editing_indicators": forensics_analysis.get("editing_indicators", []),
+            "confidence": self._calculate_overall_confidence(
+                deepfake_analysis.get("confidence", 0),
+                ai_analysis.get("confidence", 0),
+                forensics_analysis.get("confidence", 0)
+            )
+        }
+    
+    def _aggregate_video_analysis(self, frame_analyses: List[Dict]) -> Dict[str, Any]:
+        if not frame_analyses:
+            return {
+                "is_authentic": True,
+                "deepfake_probability": 0,
+                "ai_generated_probability": 0,
+                "overall_confidence": 0,
+                "temporal_consistency": 0
+            }
+        
+        avg_deepfake = np.mean([fa.get("deepfake_probability", 0) for fa in frame_analyses])
+        avg_ai = np.mean([fa.get("ai_generated_probability", 0) for fa in frame_analyses])
+        avg_confidence = np.mean([fa.get("confidence", 0) for fa in frame_analyses])
+        
+        deepfake_variance = np.var([fa.get("deepfake_probability", 0) for fa in frame_analyses])
+        temporal_consistency = 1.0 - min(deepfake_variance, 1.0)
+        
+        all_editing_indicators = []
+        for fa in frame_analyses:
+            all_editing_indicators.extend(fa.get("editing_indicators", []))
+        
+        unique_indicators = list(set(all_editing_indicators))
+        
+        return {
+            "is_authentic": avg_deepfake < 0.5 and avg_ai < 0.5,
+            "deepfake_probability": float(avg_deepfake),
+            "ai_generated_probability": float(avg_ai),
+            "editing_indicators": unique_indicators,
+            "overall_confidence": float(avg_confidence),
+            "temporal_consistency": float(temporal_consistency),
+            "frames_analyzed": len(frame_analyses)
+        }
