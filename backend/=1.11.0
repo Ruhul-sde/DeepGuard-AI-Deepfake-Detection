@@ -1,0 +1,7 @@
+Collecting scipy
+  Downloading scipy-1.16.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl.metadata (62 kB)
+Requirement already satisfied: numpy<2.6,>=1.25.2 in /home/runner/workspace/.pythonlibs/lib/python3.11/site-packages (from scipy) (1.26.4)
+Downloading scipy-1.16.2-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.whl (35.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 35.9/35.9 MB 60.0 MB/s eta 0:00:00
+Installing collected packages: scipy
+Successfully installed scipy-1.16.2
